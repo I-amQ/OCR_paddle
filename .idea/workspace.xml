@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="03d5b6f0-8da6-41b9-88cd-6d7737c9d867" name="Changes" comment="init">
+    <list default="true" id="03d5b6f0-8da6-41b9-88cd-6d7737c9d867" name="Changes" comment="updated compare_text() function for better stability and correctness">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -102,7 +102,7 @@
       <workItem from="1702739853064" duration="1776000" />
       <workItem from="1702742588228" duration="1537000" />
       <workItem from="1702757136637" duration="10934000" />
-      <workItem from="1702822302012" duration="11319000" />
+      <workItem from="1702822302012" duration="23105000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -112,7 +112,15 @@
       <option name="project" value="LOCAL" />
       <updated>1702895620849</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="updated compare_text() function for better stability and correctness">
+      <option name="closed" value="true" />
+      <created>1702904549733</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1702904549733</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -120,9 +128,10 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
-    <option name="LAST_COMMIT_MESSAGE" value="init" />
+    <MESSAGE value="updated compare_text() function for better stability and correctness" />
+    <option name="LAST_COMMIT_MESSAGE" value="updated compare_text() function for better stability and correctness" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/OCR_with_paddle$main.coverage" NAME="main Coverage Results" MODIFIED="1702904265933" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/OCR_with_paddle$main.coverage" NAME="main Coverage Results" MODIFIED="1702914647613" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
