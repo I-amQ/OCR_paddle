@@ -6,6 +6,21 @@ from deep_translator import GoogleTranslator
 from moviepy.editor import *
 import paddleocr
 
+
+def compare_text(text_old, score_sum_old, text_new, score_sum_new, threshold=0.6):
+
+    if not text_old or not score_sum_old: return True, text_new, score_sum_new
+
+    similarity_ratio = SequenceMatcher(None, text_old, text_new).ratio()
+
+    if similarity_ratio > threshold: # possibly the same text
+        if (score_sum_new / len(text_new)) > (score_sum_old / len(text_old)):
+            return True, text_new, score_sum_new
+        else:
+            return False, text_old, score_sum_old
+    else: # possibly not the same text
+        return True, text_new, score_sum_new
+
 # Set the path to the video file
 video_path = './sample3.mp4'
 
@@ -39,21 +54,11 @@ print("source framerate:" + str(frame_rate))
 frames = []
 frame_count = 0
 translated = None
-position = None
 # Iterate over each frame in the video
 
-def clean_frame(input_frame):
-
-    # grayscale
-    gray = cv2.cvtColor(input_frame, cv2.COLOR_BGR2GRAY)
-
-    # threshold the image using Otsu's thresholding method
-    thresh = cv2.threshold(gray, 0, 255,
-                           cv2.THRESH_BINARY_INV | cv2.THRESH_OTSU)[1]
-
-    cv2.imshow("Otsu", thresh)
-
-
+old_text = None
+old_score_sum = None
+old_position = None
 
 while (cap.isOpened()):
     # Read the current frame
@@ -62,6 +67,8 @@ while (cap.isOpened()):
     if ret:
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
+        texts = ""
+        score_sum = 0
         if frame_count % 2 == 0:
 
             # inverse and split
@@ -78,40 +85,62 @@ while (cap.isOpened()):
             #result = reader.readtext(region_frame,decoder = 'wordbeamsearch' ,width_ths=0.9, paragraph=True)
 
             result = ocr.ocr(region_frame, cls=False)
-
-            positions =[]
-            texts = []
-            if result[0] is not None:
-
+            position = None
+            if result[0] is not None: # Not empty list result
                 for detections in result:
                     for detection in detections:
                         # boxes = detection[0]
-                        position = detection[0][0]
-                        text = detection[1][0]
-                        translated = translator.translate(text)
-                        # scores = detection[1][1]
+                        # print(detection[1][0])
+                        #print(detection[0])
+                        if position is None:
+                            position = detection[0][0]
+                            position[0] += start_col
+                            position[1] += start_row
+                        texts += detection[1][0]
+                        score_sum += detection[1][1]
+
                         #img = paddleocr.draw_ocr(region_frame, boxes, text, scores)
-
-                        # print(detection)
-                        #print(scores)
-
                         # Adjust the x,y position of the text to account for the slicing
                         # position[0] -= start_col
-                        position[1] += start_row
+                        #position[1] += start_row
 
                         #cv2.imshow("process", img)
                         #cv2.waitKey(1)
-            else:
-                translated = None
 
-        if translated is not None:
+            if texts:
+
+                accepted_result = compare_text(old_text, old_score_sum, texts, score_sum)
+
+                if accepted_result:
+                    old_text = texts
+                    old_score_sum = score_sum
+                    old_position = position
+                print(old_text)
+                translated = translator.translate(old_text)
+
+
+                frame = cv2.putText(frame,
+                                    translated,
+                                    (int(old_position[0]), int(old_position[1])),
+                                    cv2.FONT_HERSHEY_SIMPLEX,
+                                    1, (0, 255, 0),
+                                    2,
+                                    cv2.LINE_8)
+
+            else:
+                old_text = None
+                old_score_sum = None
+                old_position = None
+
+        elif old_text:
+            print(old_text)
+            translated = translator.translate(old_text)
             frame = cv2.putText(frame,
                                 translated,
-                                (int(position[0]),int(position[1])),
+                                (int(old_position[0]), int(old_position[1])),
                                 cv2.FONT_HERSHEY_SIMPLEX,
-                                1, (0, 255, 0),
-                                2,
-                                cv2.LINE_AA)
+                                1, (0, 255, 0), 2,
+                                cv2.LINE_8)
 
         frames.append(frame)
 
@@ -132,6 +161,7 @@ new_clip = new_clip.set_audio(audio)
 new_clip.write_videofile("-translated.".join(video_path.rsplit(".", 1)), audio_nbytes=2,
                          temp_audiofile="temp-audio.m4a", remove_temp=True
                          , codec="libx264", audio_codec="aac")
+
 
 
 
