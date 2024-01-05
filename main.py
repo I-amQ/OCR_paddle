@@ -79,8 +79,8 @@ while (cap.isOpened()):
 
             # use bitwise_not to inverse white text - bad for ocr ?
 
-            # cv2.imshow("process", region_frame)
-            # cv2.waitKey(1)
+            cv2.imshow("process", region_frame)
+            cv2.waitKey(1)
 
             # Perform OCR on the
             # result = reader.readtext(region_frame,decoder = 'wordbeamsearch',
